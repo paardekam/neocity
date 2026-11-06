@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NeoCity — INTERFACE2</title>
+    <link rel="icon" href="data:," />
+    <meta name="description" content="NeoCity: een interactieve 3D-stad waarin elk gebouw een module uit INTERFACE2 (ES6+) is." />
+  </head>
+  <body>
+    <canvas id="stage" aria-label="Isometrische 3D-weergave van NeoCity"></canvas>
+
+    <header class="hud">
+      <h1>NEO<span>CITY</span></h1>
+      <p>INTERFACE2 · ES6+ district</p>
+    </header>
+
+    <p class="hint" id="hint">Klik op een gebouw · sleep om te draaien · scroll om te zoomen</p>
+
+    <div class="tooltip" id="tooltip" role="status" hidden></div>
+
+    <nav class="chips" id="chips" aria-label="Modules"></nav>
+
+    <aside class="panel" id="panel" aria-live="polite" aria-hidden="true"></aside>
+
+    <div class="loader" id="loader">
+      <div class="loader__bar"><div class="loader__fill" id="loader-fill"></div></div>
+      <p id="loader-text">NeoCity wordt geladen…</p>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

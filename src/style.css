@@ -1,0 +1,270 @@
+/* NeoCity — donkerteal thema, passend bij het 3D-model */
+:root {
+  --bg: #041a1b;
+  --panel: rgba(6, 34, 36, 0.86);
+  --line: rgba(64, 255, 200, 0.22);
+  --glow: #40ffc8;
+  --glow-2: #33ccff;
+  --text: #d9f5f0;
+  --muted: #7fb5ae;
+  --error: #ff6b6b;
+  --panel-width: 440px;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 40%, #0a3a3b 0%, var(--bg) 70%);
+  color: var(--text);
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+#stage:active { cursor: grabbing; }
+
+/* ---------- HUD ---------- */
+.hud {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  pointer-events: none;
+}
+.hud h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 0.22em;
+  font-weight: 800;
+}
+.hud h1 span { color: var(--glow); text-shadow: 0 0 16px rgba(64, 255, 200, 0.55); }
+.hud p { margin: 2px 0 0; color: var(--muted); font-size: 13px; letter-spacing: 0.08em; }
+
+.hint {
+  position: fixed;
+  left: 24px;
+  bottom: 84px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.hint.is-hidden { opacity: 0; }
+
+.tooltip {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  transform: translate(14px, 14px);
+  white-space: nowrap;
+}
+
+/* ---------- vaste labels boven de gebouwen ---------- */
+.labels { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px 4px 6px;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  transition: opacity 0.25s, border-color 0.2s, box-shadow 0.2s;
+  will-change: transform;
+}
+.label b {
+  display: inline-block;
+  min-width: 18px;
+  margin-right: 6px;
+  padding: 1px 5px;
+  text-align: center;
+  color: #032;
+  background: var(--glow);
+  border-radius: 999px;
+}
+.label.is-hover, .label:hover, .label:focus-visible { border-color: var(--glow); box-shadow: 0 0 12px rgba(64, 255, 200, 0.4); outline: none; }
+.label.is-active { border-color: var(--glow); background: rgba(64, 255, 200, 0.18); }
+.label.is-dim { opacity: 0.35; }
+@media (max-width: 900px) { .label { font-size: 11px; padding: 3px 8px 3px 5px; } }
+
+/* ---------- module-chips (toetsenbord-/mobielvriendelijke navigatie) ---------- */
+.chips {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px;
+  transition: right 0.35s ease;
+}
+.chip {
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.chip b { color: var(--glow); margin-right: 6px; }
+.chip:hover, .chip:focus-visible { border-color: var(--glow); box-shadow: 0 0 14px rgba(64, 255, 200, 0.3); outline: none; transform: translateY(-1px); }
+.chip.is-active { border-color: var(--glow); background: rgba(64, 255, 200, 0.14); }
+
+/* ---------- zijpaneel ---------- */
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(var(--panel-width), 100vw);
+  padding: 26px 24px 24px;
+  overflow-y: auto;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  border-left: 1px solid var(--line);
+  transform: translateX(105%);
+  transition: transform 0.35s ease;
+  z-index: 10;
+}
+.panel.is-open { transform: translateX(0); }
+
+.panel__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.panel__close:hover { border-color: var(--glow); }
+
+.panel__badge {
+  display: inline-block;
+  min-width: 34px;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+  font-weight: 800;
+  text-align: center;
+  color: #032;
+  background: var(--glow);
+  border-radius: 8px;
+}
+.panel h2 { margin: 0 0 4px; font-size: 24px; }
+.panel__building { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  padding: 3px 8px;
+  color: var(--glow);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.panel p { line-height: 1.55; }
+.panel h3 {
+  margin: 20px 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+pre.code, .console {
+  margin: 0;
+  padding: 12px 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  background: rgba(0, 10, 12, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+pre.code { max-height: 260px; overflow: auto; white-space: pre; color: #bfeee5; }
+
+.run {
+  margin: 16px 0 10px;
+  font: inherit;
+  font-weight: 700;
+  color: #032;
+  background: var(--glow);
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.2s;
+}
+.run:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+.run:disabled { opacity: 0.55; cursor: progress; }
+
+.console { min-height: 74px; max-height: 260px; overflow: auto; }
+.console .line { white-space: pre-wrap; word-break: break-word; }
+.console .line.muted { color: var(--muted); }
+.console .line.error { color: var(--error); }
+.console .line.ok { color: var(--glow); }
+.console .empty { color: var(--muted); }
+
+/* ---------- loader ---------- */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-content: center;
+  gap: 14px;
+  text-align: center;
+  background: var(--bg);
+  transition: opacity 0.6s;
+}
+.loader.is-done { opacity: 0; pointer-events: none; }
+.loader__bar { width: 240px; height: 4px; background: rgba(64, 255, 200, 0.15); border-radius: 4px; overflow: hidden; }
+.loader__fill { width: 0%; height: 100%; background: var(--glow); box-shadow: 0 0 12px var(--glow); transition: width 0.2s; }
+.loader p { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* Als het paneel openstaat schuift de chipbalk mee, zodat geen enkele chip bedekt wordt */
+@media (min-width: 901px) {
+  body.has-panel .chips { right: var(--panel-width); }
+}
+
+@media (max-width: 900px) {
+  .panel { top: auto; height: 62vh; width: 100vw; border-left: 0; border-top: 1px solid var(--line); transform: translateY(105%); }
+  .panel.is-open { transform: translateY(0); }
+  .hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
